@@ -1,8 +1,149 @@
 import React, { useRef, useState } from 'react';
-import html2canvas from 'html2canvas';
 import { MoonStar } from 'lucide-react';
 import CardForm from './CardForm';
 import CardPreview from './CardPreview';
+import { getTemplateById } from './templates';
+
+const TEXT_TONES = {
+  gold: {
+    kicker: '#fde68a',
+    name: '#ffffff',
+    message: '#fffbeb',
+    line: 'rgba(253,230,138,.82)',
+  },
+  ivory: {
+    kicker: 'rgba(255,255,255,.72)',
+    name: '#ffffff',
+    message: 'rgba(255,255,255,.9)',
+    line: 'rgba(255,255,255,.72)',
+  },
+  mono: {
+    kicker: 'rgba(255,255,255,.78)',
+    name: '#ffffff',
+    message: 'rgba(255,255,255,.9)',
+    line: 'rgba(255,255,255,.72)',
+  },
+};
+
+const loadImage = (src) =>
+  new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+
+const drawWash = (ctx, width, height, wash) => {
+  let gradient;
+
+  if (wash === 'leftGreen') {
+    gradient = ctx.createLinearGradient(0, 0, width * 0.45, 0);
+    gradient.addColorStop(0, 'rgba(2,44,34,.42)');
+    gradient.addColorStop(0.55, 'rgba(2,44,34,.14)');
+    gradient.addColorStop(1, 'rgba(2,44,34,0)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width * 0.48, height);
+    return;
+  }
+
+  if (wash === 'leftBlack') {
+    gradient = ctx.createLinearGradient(0, 0, width * 0.46, 0);
+    gradient.addColorStop(0, 'rgba(0,0,0,.62)');
+    gradient.addColorStop(0.58, 'rgba(0,0,0,.22)');
+    gradient.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width * 0.5, height);
+    return;
+  }
+
+  const strength = wash === 'bottomBlackStrong' ? 0.62 : wash === 'bottomGreen' ? 0.55 : wash === 'bottomBlackSoft' ? 0.42 : 0.5;
+  const color = wash === 'bottomGreen' ? '2,44,34' : '0,0,0';
+  gradient = ctx.createLinearGradient(0, height, 0, height * 0.58);
+  gradient.addColorStop(0, `rgba(${color},${strength})`);
+  gradient.addColorStop(0.58, `rgba(${color},.18)`);
+  gradient.addColorStop(1, `rgba(${color},0)`);
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, height * 0.55, width, height * 0.45);
+};
+
+const wrapText = (ctx, text, maxWidth) => {
+  const words = text.split(/\s+/).filter(Boolean);
+  const lines = [];
+  let line = '';
+
+  words.forEach((word) => {
+    const testLine = line ? `${line} ${word}` : word;
+    if (ctx.measureText(testLine).width > maxWidth && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = testLine;
+    }
+  });
+
+  if (line) lines.push(line);
+  return lines;
+};
+
+const drawDivider = (ctx, x, y, align, width, color) => {
+  const startX = align === 'right' ? x - width : align === 'center' ? x - width / 2 : x;
+  const gradient = ctx.createLinearGradient(startX, y, startX + width, y);
+  gradient.addColorStop(0, 'rgba(255,255,255,0)');
+  gradient.addColorStop(0.5, color);
+  gradient.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(startX, y, width, 2);
+};
+
+const drawDownloadText = (ctx, template, config, width, height) => {
+  const name = config.name?.trim();
+  const message = config.message?.trim();
+  if (!name && !message) return;
+
+  const layout = template.downloadText;
+  const tone = TEXT_TONES[template.messageTone] || TEXT_TONES.ivory;
+  const x = width * layout.x;
+  let y = height * layout.y;
+  const maxWidth = width * layout.maxWidth;
+  const align = layout.align;
+
+  ctx.save();
+  ctx.textAlign = align;
+  ctx.textBaseline = 'top';
+  ctx.shadowColor = 'rgba(0,0,0,.68)';
+  ctx.shadowBlur = width * 0.018;
+  ctx.shadowOffsetY = width * 0.004;
+
+  if (name) {
+    ctx.fillStyle = tone.kicker;
+    ctx.font = `900 ${Math.max(12, width * 0.022)}px Arial, sans-serif`;
+    ctx.fillText('ILA / TO', x, y);
+    y += width * 0.04;
+
+    ctx.fillStyle = tone.name;
+    ctx.font = `700 ${Math.max(28, width * 0.058)}px Georgia, serif`;
+    ctx.fillText(name, x, y, maxWidth);
+    y += width * 0.068;
+  }
+
+  if (name && message) {
+    drawDivider(ctx, x, y, align, Math.min(maxWidth * 0.45, width * 0.18), tone.line);
+    y += width * 0.028;
+  }
+
+  if (message) {
+    ctx.fillStyle = tone.message;
+    ctx.font = `700 ${Math.max(14, width * 0.027)}px Arial, sans-serif`;
+    const lines = wrapText(ctx, message, maxWidth).slice(0, 6);
+    const lineHeight = Math.max(18, width * 0.038);
+    lines.forEach((line) => {
+      ctx.fillText(line, x, y, maxWidth);
+      y += lineHeight;
+    });
+  }
+
+  ctx.restore();
+};
 
 function App() {
   const [config, setConfig] = useState({
@@ -14,19 +155,23 @@ function App() {
   const cardRef = useRef(null);
 
   const handleDownload = async () => {
-    if (!cardRef.current) return;
-
     try {
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 3,
-        useCORS: true,
-        backgroundColor: null,
-      });
+      const template = getTemplateById(config.template);
+      const img = await loadImage(template.image);
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      drawWash(ctx, canvas.width, canvas.height, template.downloadText.wash);
+      drawDownloadText(ctx, template, config, canvas.width, canvas.height);
 
       const image = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = image;
-      link.download = `eid-card-${config.name || 'greeting'}.png`;
+      const fileName = (config.name || 'greeting').replace(/[^\w-]+/g, '-').replace(/^-|-$/g, '');
+      link.download = `eid-card-${fileName || 'greeting'}.png`;
       link.click();
     } catch (err) {
       console.error('Failed to download image', err);
