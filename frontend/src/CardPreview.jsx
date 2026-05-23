@@ -33,8 +33,9 @@ const CardPreview = forwardRef(({ config }, ref) => {
             ref={ref}
             className="relative overflow-hidden rounded-[22px] transition-all duration-300"
             style={{
-                aspectRatio: t.aspectRatio,
+                aspectRatio: t.previewHeight ? undefined : t.aspectRatio,
                 width: t.previewWidth,
+                height: t.previewHeight,
                 backgroundColor: '#0f172a',
                 boxShadow: '0 25px 50px -12px rgba(0,0,0,.25)',
             }}
@@ -62,7 +63,7 @@ const CardPreview = forwardRef(({ config }, ref) => {
                             className="mb-1 text-[10px] font-black uppercase tracking-[0.26em]"
                             style={{ color: tone.kicker }}
                         >
-                            Ila / To
+                            إلى
                         </p>
                     )}
                     {name?.trim() && (

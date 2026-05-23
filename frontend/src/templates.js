@@ -1,11 +1,16 @@
+const PORTRAIT_CARD_SIZE = {
+  aspectRatio: '472 / 626',
+  previewWidth: 'min(86vw, 400px)',
+  previewHeight: 'min(114vw, 530px)',
+};
+
 export const EID_TEMPLATES = [
   {
     id: 'template-photo-1',
-    name: 'Classic Sheep',
-    mood: 'Warm straw photo',
+    name: 'خروف دافئ',
+    mood: 'ستايل صورة دافئة',
     image: '/assets/templates/template-photo-1.jpg',
-    aspectRatio: '4 / 5',
-    previewWidth: 'min(86vw, 400px)',
+    ...PORTRAIT_CARD_SIZE,
     objectPosition: 'center',
     messagePosition: 'bottom-8 right-7',
     messageWidth: 'max-w-[210px]',
@@ -19,11 +24,10 @@ export const EID_TEMPLATES = [
   },
   {
     id: 'template-photo-2',
-    name: 'Dark Ram',
-    mood: 'Minimal premium',
+    name: 'كبش داكن',
+    mood: 'ستايل فاخر وبسيط',
     image: '/assets/templates/template-photo-2.jpg',
-    aspectRatio: '4 / 5',
-    previewWidth: 'min(86vw, 400px)',
+    ...PORTRAIT_CARD_SIZE,
     objectPosition: 'center',
     messagePosition: 'bottom-[12%] left-8',
     messageWidth: 'max-w-[210px]',
@@ -37,8 +41,8 @@ export const EID_TEMPLATES = [
   },
   {
     id: 'template-photo-3',
-    name: 'Kasturii Green',
-    mood: 'Tall story card',
+    name: 'أخضر أنيق',
+    mood: 'بطاقة طويلة',
     image: '/assets/templates/template-photo-3.jpg',
     aspectRatio: '9 / 16',
     previewWidth: 'min(78vw, 335px)',
@@ -55,8 +59,8 @@ export const EID_TEMPLATES = [
   },
   {
     id: 'template-photo-4',
-    name: 'Ivory Mountain',
-    mood: 'Clean monochrome',
+    name: 'جبل أبيض',
+    mood: 'ستايل هادئ ونظيف',
     image: '/assets/templates/template-photo-4.jpg',
     aspectRatio: '2 / 3',
     previewWidth: 'min(82vw, 370px)',
@@ -73,8 +77,8 @@ export const EID_TEMPLATES = [
   },
   {
     id: 'template-photo-5',
-    name: 'Lantern Square',
-    mood: 'Decorative mosque',
+    name: 'فوانيس العيد',
+    mood: 'مسجد وفوانيس',
     image: '/assets/templates/template-photo-5.jpg',
     aspectRatio: '1 / 1',
     previewWidth: 'min(86vw, 500px)',
@@ -91,8 +95,8 @@ export const EID_TEMPLATES = [
   },
   {
     id: 'template-photo-6',
-    name: 'Arch Poster',
-    mood: 'Cinematic dark',
+    name: 'بوستر القوس',
+    mood: 'ستايل سينمائي',
     image: '/assets/templates/template-photo-6.jpg',
     aspectRatio: '1 / 1',
     previewWidth: 'min(86vw, 500px)',

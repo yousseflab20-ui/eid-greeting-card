@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { MoonStar } from 'lucide-react';
+import { Gift, MoonStar, Sparkles } from 'lucide-react';
 import CardForm from './CardForm';
 import CardPreview from './CardPreview';
 import { getTemplateById } from './templates';
@@ -117,7 +117,7 @@ const drawDownloadText = (ctx, template, config, width, height) => {
   if (name) {
     ctx.fillStyle = tone.kicker;
     ctx.font = `900 ${Math.max(12, width * 0.022)}px Arial, sans-serif`;
-    ctx.fillText('ILA / TO', x, y);
+    ctx.fillText('إلى', x, y);
     y += width * 0.04;
 
     ctx.fillStyle = tone.name;
@@ -147,12 +147,13 @@ const drawDownloadText = (ctx, template, config, width, height) => {
 
 function App() {
   const [config, setConfig] = useState({
-    name: 'Youssef',
+    name: 'يوسف',
     template: 'template-photo-1',
-    message: 'Taqabbal Allah minna wa minkum. May Allah bless you and your family with joy, peace, and baraka.',
+    message: 'تقبل الله منا ومنكم، وجعل عيدكم فرحا وبركة وسعادة.',
   });
 
   const cardRef = useRef(null);
+  const selectedTemplate = getTemplateById(config.template);
 
   const handleDownload = async () => {
     try {
@@ -170,32 +171,57 @@ function App() {
       const image = canvas.toDataURL('image/png');
       const link = document.createElement('a');
       link.href = image;
-      const fileName = (config.name || 'greeting').replace(/[^\w-]+/g, '-').replace(/^-|-$/g, '');
-      link.download = `eid-card-${fileName || 'greeting'}.png`;
+      const fileName = (config.name || 'eid-card').replace(/[^\w-]+/g, '-').replace(/^-|-$/g, '');
+      link.download = `eid-card-${fileName || 'eid-card'}.png`;
       link.click();
     } catch (err) {
       console.error('Failed to download image', err);
-      alert('Could not download image. Please try again.');
+      alert('تعذر تحميل الصورة. حاول مرة أخرى.');
     }
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-[#eef4f1] font-sans text-slate-950">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(16,185,129,0.22),transparent_28%),radial-gradient(circle_at_82%_18%,rgba(245,158,11,0.18),transparent_24%),linear-gradient(135deg,#f8fafc_0%,#edf7f2_48%,#eef2ff_100%)]" />
+    <div className="relative min-h-screen w-full overflow-hidden bg-slate-950 font-sans text-slate-950">
+      <div
+        className="pointer-events-none absolute -inset-24 scale-110 bg-cover bg-center blur-[46px] transition-all duration-700"
+        style={{ backgroundImage: `url(${selectedTemplate.image})` }}
+      />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(250,252,249,0.96)_0%,rgba(245,250,247,0.9)_35%,rgba(18,24,38,0.52)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_12%,rgba(16,185,129,0.24),transparent_26%),radial-gradient(circle_at_72%_10%,rgba(245,158,11,0.2),transparent_22%),radial-gradient(circle_at_78%_72%,rgba(15,23,42,0.36),transparent_36%)]" />
+      <div className="pointer-events-none absolute left-[-8%] top-[10%] h-[54rem] w-[54rem] rounded-full border border-emerald-900/10 bg-[conic-gradient(from_160deg,rgba(16,185,129,0.08),rgba(245,158,11,0.14),rgba(255,255,255,0),rgba(16,185,129,0.08))] blur-sm" />
+      <div className="pointer-events-none absolute right-[-14%] top-[-10%] h-[42rem] w-[42rem] rounded-full border border-amber-200/30 bg-[radial-gradient(circle,rgba(253,230,138,0.28),rgba(253,230,138,0.05)_42%,transparent_68%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.11] [background-image:linear-gradient(30deg,rgba(15,23,42,.45)_12%,transparent_12.5%,transparent_87%,rgba(15,23,42,.45)_87.5%,rgba(15,23,42,.45)),linear-gradient(150deg,rgba(15,23,42,.45)_12%,transparent_12.5%,transparent_87%,rgba(15,23,42,.45)_87.5%,rgba(15,23,42,.45)),linear-gradient(30deg,rgba(15,23,42,.45)_12%,transparent_12.5%,transparent_87%,rgba(15,23,42,.45)_87.5%,rgba(15,23,42,.45)),linear-gradient(150deg,rgba(15,23,42,.45)_12%,transparent_12.5%,transparent_87%,rgba(15,23,42,.45)_87.5%,rgba(15,23,42,.45))] [background-position:0_0,0_0,22px_39px,22px_39px] [background-size:44px_78px]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(15,23,42,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(15,23,42,0.035)_1px,transparent_1px)] bg-[size:44px_44px] [mask-image:linear-gradient(90deg,black,transparent_82%)]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-slate-950/20 to-transparent" />
 
-      <header className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-3 px-4 pb-3 pt-8 md:px-8">
-        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/70 bg-white/70 px-3 py-2 text-xs font-black uppercase tracking-[0.18em] text-emerald-700 shadow-sm backdrop-blur">
-          <MoonStar size={17} strokeWidth={2.4} />
-          Eid Al Adha
-        </div>
+      <header className="relative z-10 mx-auto grid w-full max-w-7xl gap-5 px-4 pb-3 pt-8 text-right md:px-8 lg:grid-cols-[1fr_auto] lg:items-end" dir="rtl">
         <div>
-          <h1 className="text-4xl font-black tracking-tight text-slate-950 md:text-5xl">
-            Card Studio
+          <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/70 bg-white/75 px-3 py-2 text-xs font-black tracking-[0.08em] text-emerald-800 shadow-sm backdrop-blur">
+            <MoonStar size={17} strokeWidth={2.4} />
+            صانع بطاقات عيد الأضحى
+          </div>
+          <h1 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 md:text-6xl">
+            صمّم بطاقة عيد كبيرة بدعاء واسم من تحب
           </h1>
-          <p className="mt-2 max-w-2xl text-base font-medium leading-relaxed text-slate-600">
-            Select a template, add the receiver name, and place a clean du'a directly on the card.
+          <p className="mt-3 max-w-2xl text-base font-semibold leading-relaxed text-slate-600">
+            اختار قالب بصورة جميلة، كتب اسم الشخص، زيد دعاء، وحمّل بطاقة عيد الأضحى بجودة عالية.
           </p>
+        </div>
+
+        <div className="rounded-[28px] border border-white/15 bg-slate-950/90 p-5 text-white shadow-[0_24px_70px_rgba(15,23,42,0.28)] backdrop-blur-xl">
+          <p className="font-serif text-3xl font-bold leading-none text-amber-100">
+            عيد الأضحى مبارك
+          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 text-xs font-bold text-white/85">
+              <Sparkles size={14} />
+              أدعية جاهزة
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full bg-amber-200/15 px-3 py-2 text-xs font-bold text-amber-100">
+              <Gift size={14} />
+              تحميل PNG
+            </span>
+          </div>
         </div>
       </header>
 
@@ -204,7 +230,17 @@ function App() {
           <CardForm config={config} setConfig={setConfig} onDownload={handleDownload} />
         </div>
 
-        <div className="flex w-full flex-1 items-center justify-center rounded-[32px] border border-white/70 bg-white/45 p-4 shadow-[0_28px_90px_rgba(15,23,42,0.10)] backdrop-blur-xl sm:p-8 lg:justify-center">
+        <div className="flex w-full flex-1 flex-col items-center justify-center gap-4 rounded-[32px] border border-white/70 bg-white/55 p-4 shadow-[0_34px_100px_rgba(15,23,42,0.16)] backdrop-blur-2xl sm:p-8 lg:justify-center">
+          <div className="flex w-full max-w-[560px] items-center justify-between gap-3 rounded-2xl border border-white/70 bg-white/65 px-4 py-3 text-right shadow-sm backdrop-blur" dir="rtl">
+            <div>
+              <p className="text-xs font-black tracking-[0.12em] text-emerald-800">معاينة مباشرة</p>
+              <p className="text-sm font-bold text-slate-700">{selectedTemplate.name}</p>
+            </div>
+            <div className="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-800">
+              عيد الأضحى
+            </div>
+          </div>
+
           <div className="relative group">
             <CardPreview config={config} ref={cardRef} />
             <div className="pointer-events-none absolute -inset-4 rounded-[30px] border border-emerald-500/0 transition-all duration-300 group-hover:border-emerald-500/20" />
