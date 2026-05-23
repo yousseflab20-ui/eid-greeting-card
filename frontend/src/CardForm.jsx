@@ -1,38 +1,85 @@
 import React from 'react';
-import { Download, HeartHandshake, PenLine } from 'lucide-react';
+import {
+    Download,
+    EyeOff,
+    HeartHandshake,
+    Palette,
+    PenLine,
+    Shuffle,
+    Type,
+    UserRound,
+} from 'lucide-react';
 import { EID_TEMPLATES } from './templates';
 
-const DUA_PRESETS = [
+export const DUA_PRESETS = [
     'تقبل الله منا ومنكم، وجعل عيدكم فرحا وبركة وسعادة.',
     'عيد أضحى مبارك، أسأل الله أن يملأ أيامكم بالخير والرحمة.',
     'الله يتقبل منا ومنكم صالح الأعمال، ويرزقكم الصحة والفرح وراحة البال.',
+    'أسأل الله أن يجعل عيدكم نورا، ورزقكم واسعا، وقلوبكم مطمئنة.',
+    'كل عام وأنتم بخير، أعاده الله عليكم بالصحة والسلامة والبركات.',
+];
+
+const FONT_OPTIONS = [
+    { id: 'classic', label: 'كلاسيكي' },
+    { id: 'modern', label: 'عصري' },
+    { id: 'arabic', label: 'عربي' },
+];
+
+const COLOR_OPTIONS = [
+    { id: 'white', label: 'أبيض', swatch: '#ffffff' },
+    { id: 'gold', label: 'ذهبي', swatch: '#f6d36f' },
 ];
 
 const CardForm = ({ config, setConfig, onDownload }) => {
+    const updateConfig = (patch) => setConfig({ ...config, ...patch });
+
+    const useRandomDua = () => {
+        const available = DUA_PRESETS.filter((dua) => dua !== config.message);
+        const pool = available.length ? available : DUA_PRESETS;
+        updateConfig({ message: pool[Math.floor(Math.random() * pool.length)] });
+    };
+
     return (
         <div className="rounded-[28px] border border-white/70 bg-white/[0.82] p-5 text-right shadow-[0_24px_70px_rgba(15,23,42,0.12)] backdrop-blur-xl sm:p-6" dir="rtl">
             <div className="mb-6">
                 <p className="mb-2 text-xs font-black tracking-[0.18em] text-emerald-700">استوديو العيد</p>
                 <h2 className="text-2xl font-black tracking-tight text-slate-950">صمّم بطاقة عيد الأضحى</h2>
                 <p className="mt-2 text-sm leading-relaxed text-slate-500">
-                    اختار قالب العيد، كتب اسم الشخص، وزيد دعاء واضح وجميل.
+                    اختار القالب، كتب الاسم، زيد الدعاء، وخصص شكل النص داخل البطاقة.
                 </p>
             </div>
 
             <div className="space-y-6">
-                <div>
-                    <label className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-800">
-                        <HeartHandshake size={17} className="text-emerald-700" />
-                        اسم الشخص اللي غادي ترسل ليه
-                    </label>
-                    <input
-                        type="text"
-                        className="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 text-right text-slate-950 shadow-inner shadow-slate-100/70 transition-all placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/15"
-                        value={config.name}
-                        onChange={(e) => setConfig({ ...config, name: e.target.value })}
-                        placeholder="مثال: يوسف"
-                        maxLength={30}
-                    />
+                <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                        <label className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-800">
+                            <HeartHandshake size={17} className="text-emerald-700" />
+                            الاسم المرسل إليه
+                        </label>
+                        <input
+                            type="text"
+                            className="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 text-right text-slate-950 shadow-inner shadow-slate-100/70 transition-all placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/15"
+                            value={config.name}
+                            onChange={(e) => updateConfig({ name: e.target.value })}
+                            placeholder="مثال: يوسف"
+                            maxLength={30}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-800">
+                            <UserRound size={17} className="text-emerald-700" />
+                            من طرف
+                        </label>
+                        <input
+                            type="text"
+                            className="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 text-right text-slate-950 shadow-inner shadow-slate-100/70 transition-all placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/15"
+                            value={config.fromName}
+                            onChange={(e) => updateConfig({ fromName: e.target.value })}
+                            placeholder="مثال: محمد"
+                            maxLength={30}
+                        />
+                    </div>
                 </div>
 
                 <div>
@@ -41,7 +88,8 @@ const CardForm = ({ config, setConfig, onDownload }) => {
                         {EID_TEMPLATES.map((tpl) => (
                             <button
                                 key={tpl.id}
-                                onClick={() => setConfig({ ...config, template: tpl.id })}
+                                type="button"
+                                onClick={() => updateConfig({ template: tpl.id })}
                                 className={`group overflow-hidden rounded-2xl border p-2 text-right transition-all ${config.template === tpl.id
                                     ? 'border-emerald-500 bg-emerald-50 shadow-[0_14px_30px_rgba(16,185,129,0.16)] ring-4 ring-emerald-500/10'
                                     : 'border-slate-200 bg-white/70 hover:border-slate-300 hover:bg-white hover:shadow-[0_14px_32px_rgba(15,23,42,0.08)]'
@@ -63,16 +111,26 @@ const CardForm = ({ config, setConfig, onDownload }) => {
                 </div>
 
                 <div>
-                    <label className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-800">
-                        <PenLine size={17} className="text-emerald-700" />
-                        الدعاء / الرسالة
-                    </label>
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                        <label className="flex items-center gap-2 text-sm font-bold text-slate-800">
+                            <PenLine size={17} className="text-emerald-700" />
+                            الدعاء / الرسالة
+                        </label>
+                        <button
+                            type="button"
+                            onClick={useRandomDua}
+                            className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-800 transition-all hover:bg-emerald-100"
+                        >
+                            <Shuffle size={14} />
+                            دعاء عشوائي
+                        </button>
+                    </div>
                     <div className="mb-3 grid gap-2">
-                        {DUA_PRESETS.map((dua) => (
+                        {DUA_PRESETS.slice(0, 3).map((dua) => (
                             <button
                                 key={dua}
                                 type="button"
-                                onClick={() => setConfig({ ...config, message: dua })}
+                                onClick={() => updateConfig({ message: dua })}
                                 className={`rounded-2xl border px-3 py-2 text-right text-xs font-bold leading-relaxed transition-all ${config.message === dua
                                     ? 'border-emerald-500 bg-emerald-50 text-emerald-950 ring-4 ring-emerald-500/10'
                                     : 'border-slate-200 bg-white/70 text-slate-600 hover:border-emerald-200 hover:bg-white'
@@ -86,10 +144,84 @@ const CardForm = ({ config, setConfig, onDownload }) => {
                         className="w-full resize-none rounded-2xl border border-slate-200 bg-white/90 px-4 py-3 text-right text-slate-950 shadow-inner shadow-slate-100/70 transition-all placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/15"
                         rows="3"
                         value={config.message}
-                        onChange={(e) => setConfig({ ...config, message: e.target.value })}
+                        onChange={(e) => updateConfig({ message: e.target.value })}
                         placeholder="تقبل الله منا ومنكم..."
                         maxLength={180}
                     />
+                </div>
+
+                <div className="grid gap-4">
+                    <div>
+                        <label className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-800">
+                            <Type size={17} className="text-emerald-700" />
+                            نوع الخط داخل البطاقة
+                        </label>
+                        <div className="grid grid-cols-3 gap-2">
+                            {FONT_OPTIONS.map((option) => (
+                                <button
+                                    key={option.id}
+                                    type="button"
+                                    onClick={() => updateConfig({ fontStyle: option.id })}
+                                    className={`rounded-2xl border px-3 py-3 text-sm font-black transition-all ${config.fontStyle === option.id
+                                        ? 'border-emerald-500 bg-emerald-50 text-emerald-950 ring-4 ring-emerald-500/10'
+                                        : 'border-slate-200 bg-white/70 text-slate-600 hover:bg-white'
+                                        }`}
+                                >
+                                    {option.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-800">
+                            <Palette size={17} className="text-emerald-700" />
+                            لون النص
+                        </label>
+                        <div className="grid grid-cols-2 gap-2">
+                            {COLOR_OPTIONS.map((option) => (
+                                <button
+                                    key={option.id}
+                                    type="button"
+                                    onClick={() => updateConfig({ textColor: option.id })}
+                                    className={`flex items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-black transition-all ${config.textColor === option.id
+                                        ? 'border-emerald-500 bg-emerald-50 text-emerald-950 ring-4 ring-emerald-500/10'
+                                        : 'border-slate-200 bg-white/70 text-slate-600 hover:bg-white'
+                                        }`}
+                                >
+                                    <span className="h-4 w-4 rounded-full border border-slate-300" style={{ background: option.swatch }} />
+                                    {option.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-800">
+                            <EyeOff size={17} className="text-emerald-700" />
+                            إخفاء عناصر من البطاقة
+                        </label>
+                        <div className="grid grid-cols-2 gap-2">
+                            <label className="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white/70 px-3 py-3 text-sm font-bold text-slate-700">
+                                إخفاء الاسم
+                                <input
+                                    type="checkbox"
+                                    checked={config.hideName}
+                                    onChange={(e) => updateConfig({ hideName: e.target.checked })}
+                                    className="h-5 w-5 accent-emerald-600"
+                                />
+                            </label>
+                            <label className="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white/70 px-3 py-3 text-sm font-bold text-slate-700">
+                                إخفاء الدعاء
+                                <input
+                                    type="checkbox"
+                                    checked={config.hideDua}
+                                    onChange={(e) => updateConfig({ hideDua: e.target.checked })}
+                                    className="h-5 w-5 accent-emerald-600"
+                                />
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="mt-6 border-t border-slate-200/70 pt-4">

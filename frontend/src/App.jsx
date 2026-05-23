@@ -1,27 +1,38 @@
 import React, { useRef, useState } from 'react';
-import { Gift, MoonStar, Sparkles } from 'lucide-react';
+import { CheckCircle2, Gift, MoonStar, Sparkles, X } from 'lucide-react';
 import CardForm from './CardForm';
 import CardPreview from './CardPreview';
 import { getTemplateById } from './templates';
 
-const TEXT_TONES = {
+const COLOR_TONES = {
+  white: {
+    kicker: 'rgba(255,255,255,.76)',
+    name: '#ffffff',
+    from: 'rgba(255,255,255,.82)',
+    message: 'rgba(255,255,255,.9)',
+    line: 'rgba(255,255,255,.72)',
+  },
   gold: {
     kicker: '#fde68a',
     name: '#ffffff',
+    from: '#fde68a',
     message: '#fffbeb',
     line: 'rgba(253,230,138,.82)',
   },
-  ivory: {
-    kicker: 'rgba(255,255,255,.72)',
-    name: '#ffffff',
-    message: 'rgba(255,255,255,.9)',
-    line: 'rgba(255,255,255,.72)',
+};
+
+const FONT_TONES = {
+  classic: {
+    name: 'Georgia, "Times New Roman", serif',
+    body: 'Georgia, "Times New Roman", serif',
   },
-  mono: {
-    kicker: 'rgba(255,255,255,.78)',
-    name: '#ffffff',
-    message: 'rgba(255,255,255,.9)',
-    line: 'rgba(255,255,255,.72)',
+  modern: {
+    name: 'Arial, sans-serif',
+    body: 'Arial, sans-serif',
+  },
+  arabic: {
+    name: 'Tahoma, Arial, sans-serif',
+    body: 'Tahoma, Arial, sans-serif',
   },
 };
 
@@ -96,12 +107,14 @@ const drawDivider = (ctx, x, y, align, width, color) => {
 };
 
 const drawDownloadText = (ctx, template, config, width, height) => {
-  const name = config.name?.trim();
-  const message = config.message?.trim();
-  if (!name && !message) return;
+  const name = config.hideName ? '' : config.name?.trim();
+  const fromName = config.fromName?.trim();
+  const message = config.hideDua ? '' : config.message?.trim();
+  if (!name && !fromName && !message) return;
 
   const layout = template.downloadText;
-  const tone = TEXT_TONES[template.messageTone] || TEXT_TONES.ivory;
+  const tone = COLOR_TONES[config.textColor] || COLOR_TONES.white;
+  const fonts = FONT_TONES[config.fontStyle] || FONT_TONES.classic;
   const x = width * layout.x;
   let y = height * layout.y;
   const maxWidth = width * layout.maxWidth;
@@ -109,6 +122,7 @@ const drawDownloadText = (ctx, template, config, width, height) => {
 
   ctx.save();
   ctx.textAlign = align;
+  ctx.direction = 'rtl';
   ctx.textBaseline = 'top';
   ctx.shadowColor = 'rgba(0,0,0,.68)';
   ctx.shadowBlur = width * 0.018;
@@ -116,24 +130,31 @@ const drawDownloadText = (ctx, template, config, width, height) => {
 
   if (name) {
     ctx.fillStyle = tone.kicker;
-    ctx.font = `900 ${Math.max(12, width * 0.022)}px Arial, sans-serif`;
+    ctx.font = `900 ${Math.max(12, width * 0.022)}px ${fonts.body}`;
     ctx.fillText('إلى', x, y);
     y += width * 0.04;
 
     ctx.fillStyle = tone.name;
-    ctx.font = `700 ${Math.max(28, width * 0.058)}px Georgia, serif`;
+    ctx.font = `700 ${Math.max(28, width * 0.058)}px ${fonts.name}`;
     ctx.fillText(name, x, y, maxWidth);
     y += width * 0.068;
   }
 
-  if (name && message) {
+  if (fromName) {
+    ctx.fillStyle = tone.from;
+    ctx.font = `700 ${Math.max(12, width * 0.024)}px ${fonts.body}`;
+    ctx.fillText(`من طرف ${fromName}`, x, y, maxWidth);
+    y += width * 0.044;
+  }
+
+  if ((name || fromName) && message) {
     drawDivider(ctx, x, y, align, Math.min(maxWidth * 0.45, width * 0.18), tone.line);
     y += width * 0.028;
   }
 
   if (message) {
     ctx.fillStyle = tone.message;
-    ctx.font = `700 ${Math.max(14, width * 0.027)}px Arial, sans-serif`;
+    ctx.font = `700 ${Math.max(14, width * 0.027)}px ${fonts.body}`;
     const lines = wrapText(ctx, message, maxWidth).slice(0, 6);
     const lineHeight = Math.max(18, width * 0.038);
     lines.forEach((line) => {
@@ -148,9 +169,15 @@ const drawDownloadText = (ctx, template, config, width, height) => {
 function App() {
   const [config, setConfig] = useState({
     name: 'يوسف',
-    template: 'template-photo-1',
+    fromName: 'محمد',
+    template: 'template-photo-3',
     message: 'تقبل الله منا ومنكم، وجعل عيدكم فرحا وبركة وسعادة.',
+    fontStyle: 'arabic',
+    hideName: false,
+    hideDua: false,
+    textColor: 'gold',
   });
+  const [downloadDone, setDownloadDone] = useState(false);
 
   const cardRef = useRef(null);
   const selectedTemplate = getTemplateById(config.template);
@@ -174,6 +201,7 @@ function App() {
       const fileName = (config.name || 'eid-card').replace(/[^\w-]+/g, '-').replace(/^-|-$/g, '');
       link.download = `eid-card-${fileName || 'eid-card'}.png`;
       link.click();
+      setDownloadDone(true);
     } catch (err) {
       console.error('Failed to download image', err);
       alert('تعذر تحميل الصورة. حاول مرة أخرى.');
@@ -230,7 +258,7 @@ function App() {
           <CardForm config={config} setConfig={setConfig} onDownload={handleDownload} />
         </div>
 
-        <div className="flex w-full flex-1 flex-col items-center justify-center gap-4 rounded-[32px] border border-white/70 bg-white/55 p-4 shadow-[0_34px_100px_rgba(15,23,42,0.16)] backdrop-blur-2xl sm:p-8 lg:justify-center">
+        <div className="flex min-h-[760px] w-full flex-1 flex-col items-center justify-center gap-5 rounded-[32px] border border-white/70 bg-white/55 p-4 shadow-[0_34px_100px_rgba(15,23,42,0.16)] backdrop-blur-2xl sm:p-8 lg:justify-center">
           <div className="flex w-full max-w-[560px] items-center justify-between gap-3 rounded-2xl border border-white/70 bg-white/65 px-4 py-3 text-right shadow-sm backdrop-blur" dir="rtl">
             <div>
               <p className="text-xs font-black tracking-[0.12em] text-emerald-800">معاينة مباشرة</p>
@@ -247,6 +275,35 @@ function App() {
           </div>
         </div>
       </main>
+
+      {downloadDone && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/55 p-4 backdrop-blur-sm" dir="rtl">
+          <div className="w-full max-w-md rounded-[28px] border border-white/70 bg-white p-6 text-center shadow-[0_30px_90px_rgba(15,23,42,0.35)]">
+            <button
+              type="button"
+              onClick={() => setDownloadDone(false)}
+              className="mr-auto flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200"
+              aria-label="إغلاق"
+            >
+              <X size={18} />
+            </button>
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+              <CheckCircle2 size={34} strokeWidth={2.4} />
+            </div>
+            <h2 className="text-2xl font-black text-slate-950">تم إنشاء البطاقة بنجاح</h2>
+            <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-500">
+              تم تحميل بطاقة عيد الأضحى على جهازك. يمكنك الآن إرسالها لمن تحب.
+            </p>
+            <button
+              type="button"
+              onClick={() => setDownloadDone(false)}
+              className="mt-6 w-full rounded-2xl bg-slate-950 py-3 font-black text-white transition-all hover:bg-emerald-600"
+            >
+              تم
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
