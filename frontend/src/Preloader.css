@@ -1,0 +1,53 @@
+/* =====================================================
+   Preloader.css
+   ===================================================== */
+
+.preloader {
+  position: fixed; inset: 0; z-index: 2000;
+  background: #020818;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 26px;
+  transition: opacity .5s ease;
+}
+.preloader.done { opacity: 0; pointer-events: none; }
+
+.pre-wrap {
+  position: relative; width: 130px; height: 130px;
+  display: flex; align-items: center; justify-content: center;
+}
+.pre-star {
+  width: 72px; height: 72px; position: relative; z-index: 2;
+  animation: p-spin 3s linear infinite, p-glow 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 18px rgba(212,175,55,.9));
+}
+@keyframes p-spin { to { transform: rotate(360deg); } }
+@keyframes p-glow {
+  0%,100% { filter: drop-shadow(0 0 14px rgba(212,175,55,.7)); }
+  50%      { filter: drop-shadow(0 0 32px rgba(245,224,112,1)); }
+}
+
+.pre-rings { position: absolute; inset: 0; }
+.pre-ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(212,175,55,.3);
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  animation: pr-expand 2s ease-out infinite;
+}
+.r1 { width: 82px;  height: 82px;  animation-delay: 0s; }
+.r2 { width: 106px; height: 106px; animation-delay: .65s; }
+.r3 { width: 130px; height: 130px; animation-delay: 1.3s; }
+@keyframes pr-expand {
+  0%   { transform: translate(-50%,-50%) scale(.6); opacity: .8; }
+  100% { transform: translate(-50%,-50%) scale(1.4); opacity: 0; }
+}
+
+.pre-label {
+  font-family: 'Amiri', serif; font-size: 1.1rem;
+  color: rgba(212,175,55,.65); letter-spacing: .12em; direction: rtl;
+}
+.pre-label span { animation: dot-b 1.5s ease-in-out infinite; opacity: 0; }
+.dot-1 { animation-delay: 0s; }
+.dot-2 { animation-delay: .3s; }
+.dot-3 { animation-delay: .6s; }
+@keyframes dot-b { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
