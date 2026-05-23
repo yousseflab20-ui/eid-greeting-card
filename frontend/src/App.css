@@ -1,0 +1,444 @@
+.eid-night {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  color: #fff8df;
+  background:
+    radial-gradient(circle at 50% 112%, rgba(244, 184, 82, 0.28), transparent 34rem),
+    radial-gradient(circle at 18% 18%, rgba(65, 114, 201, 0.24), transparent 26rem),
+    linear-gradient(180deg, #071328 0%, #0b1933 45%, #08101f 100%);
+}
+
+.sky,
+.scene,
+.horizon {
+  position: absolute;
+  inset: 0;
+}
+
+.star {
+  position: absolute;
+  left: calc((var(--i) * 37px) % 100vw);
+  top: calc(24px + ((var(--i) * 53px) % 56vh));
+  width: calc(2px + (var(--i) % 3) * 1px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #fff8df;
+  box-shadow: 0 0 12px rgba(255, 248, 223, 0.9);
+  opacity: 0.32;
+  animation: twinkle calc(2.6s + (var(--i) % 5) * 0.45s) ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.18s);
+}
+
+.shooting-star {
+  position: absolute;
+  top: 18%;
+  left: -12rem;
+  width: 9rem;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, #f9d982, transparent);
+  filter: drop-shadow(0 0 12px rgba(249, 217, 130, 0.9));
+  transform: rotate(-18deg);
+  animation: shoot 6.4s ease-in-out infinite;
+}
+
+.shooting-star.second {
+  top: 38%;
+  animation-delay: 2.8s;
+  animation-duration: 7.8s;
+}
+
+.scene {
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  text-align: center;
+  z-index: 2;
+}
+
+.content {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  width: min(900px, 100%);
+  transform: translateY(-64px);
+}
+
+.eyebrow,
+.name-control span,
+.tap-hint {
+  color: #f9d982;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+h1,
+p {
+  margin: 0;
+}
+
+h1 {
+  max-width: 980px;
+  font-size: clamp(3.6rem, 11vw, 9.6rem);
+  line-height: 0.86;
+  letter-spacing: 0;
+  text-wrap: balance;
+  text-shadow:
+    0 0 24px rgba(249, 217, 130, 0.2),
+    0 24px 80px rgba(0, 0, 0, 0.55);
+}
+
+.subtitle {
+  max-width: 660px;
+  color: rgba(255, 248, 223, 0.76);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.6;
+}
+
+.name-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  margin-top: 8px;
+  border: 1px solid rgba(249, 217, 130, 0.26);
+  border-radius: 999px;
+  padding: 6px 8px 6px 18px;
+  background: rgba(255, 248, 223, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 18px 50px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(18px);
+}
+
+.name-control input {
+  width: min(46vw, 260px);
+  min-height: 40px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 16px;
+  color: #0b1933;
+  background: #fff8df;
+  font: inherit;
+  font-weight: 800;
+}
+
+.name-control input:focus-visible,
+.sheep-stage:focus-visible {
+  outline: 3px solid rgba(249, 217, 130, 0.52);
+  outline-offset: 4px;
+}
+
+.moon-wrap {
+  position: absolute;
+  top: 8vh;
+  right: 10vw;
+  z-index: 1;
+  animation: moonFloat 5.8s ease-in-out infinite;
+}
+
+.moon {
+  position: relative;
+  width: clamp(96px, 14vw, 170px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #f9d982;
+  box-shadow:
+    0 0 48px rgba(249, 217, 130, 0.48),
+    0 0 120px rgba(249, 217, 130, 0.18);
+}
+
+.moon::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 0 34%;
+  border-radius: inherit;
+  background: #0b1933;
+}
+
+.lanterns {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.lantern {
+  position: absolute;
+  width: 56px;
+  height: 92px;
+  border: 2px solid rgba(249, 217, 130, 0.7);
+  border-radius: 28px 28px 10px 10px;
+  background:
+    radial-gradient(circle at 50% 64%, rgba(249, 217, 130, 0.7), transparent 30%),
+    linear-gradient(180deg, rgba(249, 217, 130, 0.14), rgba(201, 85, 58, 0.35));
+  box-shadow: 0 0 28px rgba(249, 217, 130, 0.2);
+  animation: lanternSwing 3.7s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+.lantern::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 1px;
+  height: 70px;
+  background: rgba(249, 217, 130, 0.42);
+}
+
+.lantern-one {
+  top: 5vh;
+  left: 9vw;
+}
+
+.lantern-two {
+  top: 12vh;
+  left: 21vw;
+  scale: 0.72;
+  animation-delay: -1.2s;
+}
+
+.lantern-three {
+  top: 9vh;
+  right: 24vw;
+  scale: 0.84;
+  animation-delay: -2s;
+}
+
+.sheep-stage {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(88px, 13vh, 150px);
+  z-index: 5;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  min-width: 190px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0;
+  color: #fff8df;
+  background: transparent;
+  cursor: pointer;
+  transform: translateX(-50%);
+}
+
+.tap-hint {
+  opacity: 0.78;
+  transform: translateY(8px);
+}
+
+.sheep {
+  display: block;
+  font-size: clamp(5.4rem, 14vw, 10rem);
+  line-height: 1;
+  filter: drop-shadow(0 28px 34px rgba(0, 0, 0, 0.4));
+  animation: sheepIdle 2.8s ease-in-out infinite;
+  transition: transform 180ms ease;
+}
+
+.sheep-stage:hover .sheep {
+  transform: translateY(-12px) rotate(-4deg) scale(1.06);
+}
+
+.ground-glow {
+  width: clamp(150px, 24vw, 270px);
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(249, 217, 130, 0.18);
+  filter: blur(6px);
+  transform: translateY(-24px);
+}
+
+.celebrating .sheep {
+  animation: sheepJump 840ms cubic-bezier(0.2, 0.86, 0.22, 1.22) both;
+}
+
+.sparkle-burst {
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  bottom: clamp(160px, 24vh, 260px);
+  z-index: 4;
+  width: 1px;
+  height: 1px;
+}
+
+.sparkle-burst span {
+  position: absolute;
+  opacity: 0;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+}
+
+.celebrating .sparkle-burst span {
+  animation: sparklePop 1.35s ease-out both;
+  animation-delay: calc(var(--i) * 54ms);
+}
+
+.horizon {
+  top: auto;
+  z-index: 1;
+  height: 22vh;
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(249, 217, 130, 0.2), transparent 60%),
+    linear-gradient(180deg, transparent, rgba(3, 8, 20, 0.86));
+}
+
+.horizon span {
+  position: absolute;
+  bottom: -70px;
+  width: 34vw;
+  height: 17vw;
+  border-radius: 50% 50% 0 0;
+  background: rgba(3, 8, 20, 0.86);
+}
+
+.horizon span:nth-child(1) {
+  left: -8vw;
+}
+
+.horizon span:nth-child(2) {
+  left: 28vw;
+  width: 44vw;
+  height: 20vw;
+}
+
+.horizon span:nth-child(3) {
+  right: -10vw;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+
+@keyframes shoot {
+  0%,
+  62% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-18deg);
+  }
+
+  66% {
+    opacity: 1;
+  }
+
+  82%,
+  100% {
+    opacity: 0;
+    transform: translate3d(130vw, 34vh, 0) rotate(-18deg);
+  }
+}
+
+@keyframes moonFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(14px);
+  }
+}
+
+@keyframes lanternSwing {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes sheepIdle {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+@keyframes sheepJump {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+
+  34% {
+    transform: translateY(-72px) rotate(-9deg) scale(1.15);
+  }
+
+  68% {
+    transform: translateY(12px) rotate(7deg) scale(0.96);
+  }
+
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes sparklePop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.5);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--x), var(--y), 0) rotate(calc(var(--i) * 70deg))
+      scale(1.15);
+  }
+}
+
+@media (max-width: 760px) {
+  .scene {
+    padding: 18px;
+  }
+
+  .content {
+    transform: translateY(-86px);
+  }
+
+  .name-control {
+    align-items: stretch;
+    flex-direction: column;
+    width: min(360px, 100%);
+    border-radius: 22px;
+    padding: 14px;
+  }
+
+  .name-control input {
+    width: 100%;
+  }
+
+  .lantern-two,
+  .lantern-three {
+    display: none;
+  }
+
+  .moon-wrap {
+    top: 7vh;
+    right: 5vw;
+  }
+}
