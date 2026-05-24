@@ -1,23 +1,23 @@
-import React, { useRef, useState } from 'react';
-import { CheckCircle2, Gift, MoonStar, Sparkles, X } from 'lucide-react';
-import CardForm from './CardForm';
-import CardPreview from './CardPreview';
-import { getTemplateById } from './templates';
+import React, { useRef, useState } from "react";
+import { CheckCircle2, Gift, MoonStar, Sparkles, X } from "lucide-react";
+import CardForm from "./CardForm";
+import CardPreview from "./CardPreview";
+import { getTemplateById } from "./templates";
 
 const COLOR_TONES = {
   white: {
-    kicker: 'rgba(255,255,255,.76)',
-    name: '#ffffff',
-    from: 'rgba(255,255,255,.82)',
-    message: 'rgba(255,255,255,.9)',
-    line: 'rgba(255,255,255,.72)',
+    kicker: "rgba(255,255,255,.76)",
+    name: "#ffffff",
+    from: "rgba(255,255,255,.82)",
+    message: "rgba(255,255,255,.9)",
+    line: "rgba(255,255,255,.72)",
   },
   gold: {
-    kicker: '#fde68a',
-    name: '#ffffff',
-    from: '#fde68a',
-    message: '#fffbeb',
-    line: 'rgba(253,230,138,.82)',
+    kicker: "#fde68a",
+    name: "#ffffff",
+    from: "#fde68a",
+    message: "#fffbeb",
+    line: "rgba(253,230,138,.82)",
   },
 };
 
@@ -27,12 +27,12 @@ const FONT_TONES = {
     body: 'Georgia, "Times New Roman", serif',
   },
   modern: {
-    name: 'Arial, sans-serif',
-    body: 'Arial, sans-serif',
+    name: "Arial, sans-serif",
+    body: "Arial, sans-serif",
   },
   arabic: {
-    name: 'Tahoma, Arial, sans-serif',
-    body: 'Tahoma, Arial, sans-serif',
+    name: "Tahoma, Arial, sans-serif",
+    body: "Tahoma, Arial, sans-serif",
   },
 };
 
@@ -47,28 +47,35 @@ const loadImage = (src) =>
 const drawWash = (ctx, width, height, wash) => {
   let gradient;
 
-  if (wash === 'leftGreen') {
+  if (wash === "leftGreen") {
     gradient = ctx.createLinearGradient(0, 0, width * 0.45, 0);
-    gradient.addColorStop(0, 'rgba(2,44,34,.42)');
-    gradient.addColorStop(0.55, 'rgba(2,44,34,.14)');
-    gradient.addColorStop(1, 'rgba(2,44,34,0)');
+    gradient.addColorStop(0, "rgba(2,44,34,.42)");
+    gradient.addColorStop(0.55, "rgba(2,44,34,.14)");
+    gradient.addColorStop(1, "rgba(2,44,34,0)");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width * 0.48, height);
     return;
   }
 
-  if (wash === 'leftBlack') {
+  if (wash === "leftBlack") {
     gradient = ctx.createLinearGradient(0, 0, width * 0.46, 0);
-    gradient.addColorStop(0, 'rgba(0,0,0,.62)');
-    gradient.addColorStop(0.58, 'rgba(0,0,0,.22)');
-    gradient.addColorStop(1, 'rgba(0,0,0,0)');
+    gradient.addColorStop(0, "rgba(0,0,0,.62)");
+    gradient.addColorStop(0.58, "rgba(0,0,0,.22)");
+    gradient.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width * 0.5, height);
     return;
   }
 
-  const strength = wash === 'bottomBlackStrong' ? 0.62 : wash === 'bottomGreen' ? 0.55 : wash === 'bottomBlackSoft' ? 0.42 : 0.5;
-  const color = wash === 'bottomGreen' ? '2,44,34' : '0,0,0';
+  const strength =
+    wash === "bottomBlackStrong"
+      ? 0.62
+      : wash === "bottomGreen"
+        ? 0.55
+        : wash === "bottomBlackSoft"
+          ? 0.42
+          : 0.5;
+  const color = wash === "bottomGreen" ? "2,44,34" : "0,0,0";
   gradient = ctx.createLinearGradient(0, height, 0, height * 0.58);
   gradient.addColorStop(0, `rgba(${color},${strength})`);
   gradient.addColorStop(0.58, `rgba(${color},.18)`);
@@ -80,7 +87,7 @@ const drawWash = (ctx, width, height, wash) => {
 const wrapText = (ctx, text, maxWidth) => {
   const words = text.split(/\s+/).filter(Boolean);
   const lines = [];
-  let line = '';
+  let line = "";
 
   words.forEach((word) => {
     const testLine = line ? `${line} ${word}` : word;
@@ -97,19 +104,20 @@ const wrapText = (ctx, text, maxWidth) => {
 };
 
 const drawDivider = (ctx, x, y, align, width, color) => {
-  const startX = align === 'right' ? x - width : align === 'center' ? x - width / 2 : x;
+  const startX =
+    align === "right" ? x - width : align === "center" ? x - width / 2 : x;
   const gradient = ctx.createLinearGradient(startX, y, startX + width, y);
-  gradient.addColorStop(0, 'rgba(255,255,255,0)');
+  gradient.addColorStop(0, "rgba(255,255,255,0)");
   gradient.addColorStop(0.5, color);
-  gradient.addColorStop(1, 'rgba(255,255,255,0)');
+  gradient.addColorStop(1, "rgba(255,255,255,0)");
   ctx.fillStyle = gradient;
   ctx.fillRect(startX, y, width, 2);
 };
 
 const drawDownloadText = (ctx, template, config, width, height) => {
-  const name = config.hideName ? '' : config.name?.trim();
+  const name = config.hideName ? "" : config.name?.trim();
   const fromName = config.fromName?.trim();
-  const message = config.hideDua ? '' : config.message?.trim();
+  const message = config.hideDua ? "" : config.message?.trim();
   if (!name && !fromName && !message) return;
 
   const layout = template.downloadText;
@@ -122,16 +130,16 @@ const drawDownloadText = (ctx, template, config, width, height) => {
 
   ctx.save();
   ctx.textAlign = align;
-  ctx.direction = 'rtl';
-  ctx.textBaseline = 'top';
-  ctx.shadowColor = 'rgba(0,0,0,.68)';
+  ctx.direction = "rtl";
+  ctx.textBaseline = "top";
+  ctx.shadowColor = "rgba(0,0,0,.68)";
   ctx.shadowBlur = width * 0.018;
   ctx.shadowOffsetY = width * 0.004;
 
   if (name) {
     ctx.fillStyle = tone.kicker;
     ctx.font = `900 ${Math.max(12, width * 0.022)}px ${fonts.body}`;
-    ctx.fillText('إلى', x, y);
+    ctx.fillText("إلى", x, y);
     y += width * 0.04;
 
     ctx.fillStyle = tone.name;
@@ -148,7 +156,14 @@ const drawDownloadText = (ctx, template, config, width, height) => {
   }
 
   if ((name || fromName) && message) {
-    drawDivider(ctx, x, y, align, Math.min(maxWidth * 0.45, width * 0.18), tone.line);
+    drawDivider(
+      ctx,
+      x,
+      y,
+      align,
+      Math.min(maxWidth * 0.45, width * 0.18),
+      tone.line,
+    );
     y += width * 0.028;
   }
 
@@ -168,14 +183,14 @@ const drawDownloadText = (ctx, template, config, width, height) => {
 
 function App() {
   const [config, setConfig] = useState({
-    name: 'يوسف',
-    fromName: 'محمد',
-    template: 'template-photo-3',
-    message: 'تقبل الله منا ومنكم، وجعل عيدكم فرحا وبركة وسعادة.',
-    fontStyle: 'arabic',
+    name: "يوسف",
+    fromName: "محمد",
+    template: "template-photo-3",
+    message: "تقبل الله منا ومنكم، وجعل عيدكم فرحا وبركة وسعادة.",
+    fontStyle: "arabic",
     hideName: false,
     hideDua: false,
-    textColor: 'gold',
+    textColor: "gold",
   });
   const [downloadDone, setDownloadDone] = useState(false);
 
@@ -186,25 +201,27 @@ function App() {
     try {
       const template = getTemplateById(config.template);
       const img = await loadImage(template.image);
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = img.naturalWidth || img.width;
       canvas.height = img.naturalHeight || img.height;
 
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       drawWash(ctx, canvas.width, canvas.height, template.downloadText.wash);
       drawDownloadText(ctx, template, config, canvas.width, canvas.height);
 
-      const image = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
       link.href = image;
-      const fileName = (config.name || 'eid-card').replace(/[^\w-]+/g, '-').replace(/^-|-$/g, '');
-      link.download = `eid-card-${fileName || 'eid-card'}.png`;
+      const fileName = (config.name || "eid-card")
+        .replace(/[^\w-]+/g, "-")
+        .replace(/^-|-$/g, "");
+      link.download = `eid-card-${fileName || "eid-card"}.png`;
       link.click();
       setDownloadDone(true);
     } catch (err) {
-      console.error('Failed to download image', err);
-      alert('تعذر تحميل الصورة. حاول مرة أخرى.');
+      console.error("Failed to download image", err);
+      alert("تعذر تحميل الصورة. حاول مرة أخرى.");
     }
   };
 
@@ -222,7 +239,10 @@ function App() {
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(15,23,42,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(15,23,42,0.035)_1px,transparent_1px)] bg-[size:44px_44px] [mask-image:linear-gradient(90deg,black,transparent_82%)]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-slate-950/20 to-transparent" />
 
-      <header className="relative z-10 mx-auto grid w-full max-w-7xl gap-5 px-4 pb-3 pt-8 text-right md:px-8 lg:grid-cols-[1fr_auto] lg:items-end" dir="rtl">
+      <header
+        className="relative z-10 mx-auto grid w-full max-w-7xl gap-5 px-4 pb-3 pt-8 text-right md:px-8 lg:grid-cols-[1fr_auto] lg:items-end"
+        dir="rtl"
+      >
         <div>
           <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/70 bg-white/75 px-3 py-2 text-xs font-black tracking-[0.08em] text-emerald-800 shadow-sm backdrop-blur">
             <MoonStar size={17} strokeWidth={2.4} />
@@ -232,7 +252,8 @@ function App() {
             صمّم بطاقة عيد كبيرة بدعاء واسم من تحب
           </h1>
           <p className="mt-3 max-w-2xl text-base font-semibold leading-relaxed text-slate-600">
-            اختار قالب بصورة جميلة، كتب اسم الشخص، زيد دعاء، وحمّل بطاقة عيد الأضحى بجودة عالية.
+            اختار قالب بصورة جميلة، كتب اسم الشخص، زيد دعاء، وحمّل بطاقة عيد
+            الأضحى بجودة عالية.
           </p>
         </div>
 
@@ -255,14 +276,25 @@ function App() {
 
       <main className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col items-start gap-8 p-4 md:p-8 lg:flex-row">
         <div className="w-full flex-1 lg:max-w-md">
-          <CardForm config={config} setConfig={setConfig} onDownload={handleDownload} />
+          <CardForm
+            config={config}
+            setConfig={setConfig}
+            onDownload={handleDownload}
+          />
         </div>
 
-        <div className="flex min-h-[760px] w-full flex-1 flex-col items-center justify-center gap-5 rounded-[32px] border border-white/70 bg-white/55 p-4 shadow-[0_34px_100px_rgba(15,23,42,0.16)] backdrop-blur-2xl sm:p-8 lg:justify-center">
-          <div className="flex w-full max-w-[560px] items-center justify-between gap-3 rounded-2xl border border-white/70 bg-white/65 px-4 py-3 text-right shadow-sm backdrop-blur" dir="rtl">
+        <div className="flex w-full flex-1 flex-col items-center justify-center gap-5 rounded-[32px] border border-white/70 bg-white/55 p-4 shadow-[0_34px_100px_rgba(15,23,42,0.16)] backdrop-blur-2xl sm:p-8 lg:justify-center lg:self-center">
+          <div
+            className="flex w-full max-w-[560px] items-center justify-between gap-3 rounded-2xl border border-white/70 bg-white/65 px-4 py-3 text-right shadow-sm backdrop-blur"
+            dir="rtl"
+          >
             <div>
-              <p className="text-xs font-black tracking-[0.12em] text-emerald-800">معاينة مباشرة</p>
-              <p className="text-sm font-bold text-slate-700">{selectedTemplate.name}</p>
+              <p className="text-xs font-black tracking-[0.12em] text-emerald-800">
+                معاينة مباشرة
+              </p>
+              <p className="text-sm font-bold text-slate-700">
+                {selectedTemplate.name}
+              </p>
             </div>
             <div className="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-800">
               عيد الأضحى
@@ -277,7 +309,10 @@ function App() {
       </main>
 
       {downloadDone && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/55 p-4 backdrop-blur-sm" dir="rtl">
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-slate-950/55 p-4 backdrop-blur-sm"
+          dir="rtl"
+        >
           <div className="w-full max-w-md rounded-[28px] border border-white/70 bg-white p-6 text-center shadow-[0_30px_90px_rgba(15,23,42,0.35)]">
             <button
               type="button"
@@ -290,7 +325,9 @@ function App() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
               <CheckCircle2 size={34} strokeWidth={2.4} />
             </div>
-            <h2 className="text-2xl font-black text-slate-950">تم إنشاء البطاقة بنجاح</h2>
+            <h2 className="text-2xl font-black text-slate-950">
+              تم إنشاء البطاقة بنجاح
+            </h2>
             <p className="mt-2 text-sm font-semibold leading-relaxed text-slate-500">
               تم تحميل بطاقة عيد الأضحى على جهازك. يمكنك الآن إرسالها لمن تحب.
             </p>

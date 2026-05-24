@@ -1,7 +1,6 @@
 const PORTRAIT_CARD_SIZE = {
   aspectRatio: '472 / 626',
-  previewWidth: 'min(86vw, 400px)',
-  previewHeight: 'min(114vw, 530px)',
+  paddingBottomPercent: '132.6%',
 };
 
 export const EID_TEMPLATES = [
@@ -45,6 +44,7 @@ export const EID_TEMPLATES = [
     mood: 'بطاقة طويلة',
     image: '/assets/templates/template-photo-3.jpg',
     aspectRatio: '9 / 16',
+    paddingBottomPercent: '177.8%',
     objectPosition: 'center',
     messagePosition: 'bottom-8 right-6',
     messageWidth: 'max-w-[145px]',
@@ -62,6 +62,7 @@ export const EID_TEMPLATES = [
     mood: 'ستايل هادئ ونظيف',
     image: '/assets/templates/template-photo-4.jpg',
     aspectRatio: '2 / 3',
+    paddingBottomPercent: '150%',
     objectPosition: 'center',
     messagePosition: 'bottom-10 left-8',
     messageWidth: 'max-w-[230px]',
@@ -79,6 +80,7 @@ export const EID_TEMPLATES = [
     mood: 'مسجد وفوانيس',
     image: '/assets/templates/template-photo-5.jpg',
     aspectRatio: '1 / 1',
+    paddingBottomPercent: '100%',
     objectPosition: 'center',
     messagePosition: 'top-8 left-8',
     messageWidth: 'max-w-[210px]',
@@ -96,6 +98,7 @@ export const EID_TEMPLATES = [
     mood: 'ستايل سينمائي',
     image: '/assets/templates/template-photo-6.jpg',
     aspectRatio: '1 / 1',
+    paddingBottomPercent: '100%',
     objectPosition: 'center',
     messagePosition: 'top-[18%] left-10',
     messageWidth: 'max-w-[220px]',
