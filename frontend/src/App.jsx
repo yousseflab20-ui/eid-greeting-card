@@ -244,8 +244,12 @@ function App() {
         dir="rtl"
       >
         <div>
-          <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/70 bg-white/75 px-3 py-2 text-xs font-black tracking-[0.08em] text-emerald-800 shadow-sm backdrop-blur">
-            <MoonStar size={17} strokeWidth={2.4} />
+          <div className="inline-flex w-fit items-center gap-2 rounded-[14px] border border-white/70 bg-white/75 px-3 py-2 text-xs font-black tracking-[0.08em] text-emerald-800 shadow-sm backdrop-blur">
+            <img
+              src="/assets/templates/logo.png"
+              alt="شعار صانع بطاقات عيد الأضحى"
+              className="h-6 w-6 rounded-full object-cover mix-blend-multiply"
+            />
             صانع بطاقات عيد الأضحى
           </div>
           <h1 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-slate-950 md:text-6xl">
